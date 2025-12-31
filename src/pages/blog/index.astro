@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import BlogHeader from '../../components/BlogHeader.astro';
+import BlogCard from '../../components/BlogCard.astro';
+
+// Get all blog posts and sort by date (newest first)
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<BlogLayout title="Blog">
+  <BlogHeader />
+  <div class="posts">
+    {sortedPosts.map(post => (
+      <BlogCard
+        title={post.data.title}
+        description={post.data.description}
+        pubDate={post.data.pubDate}
+        slug={post.slug}
+      />
+    ))}
+  </div>
+</BlogLayout>
+
+<style>
+  .posts {
+    margin-top: 32px;
+  }
+</style>

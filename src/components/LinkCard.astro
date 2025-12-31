@@ -1,0 +1,165 @@
+---
+import ogs from 'open-graph-scraper';
+
+interface Props {
+  url: string;
+}
+
+const { url } = Astro.props;
+
+let ogData = {
+  title: url,
+  description: '',
+  image: '',
+  siteName: '',
+};
+
+try {
+  const { result } = await ogs({ url });
+  if (result.success) {
+    ogData = {
+      title: result.ogTitle || result.twitterTitle || url,
+      description: result.ogDescription || result.twitterDescription || '',
+      image: result.ogImage?.[0]?.url || result.twitterImage?.[0]?.url || '',
+      siteName: result.ogSiteName || new URL(url).hostname,
+    };
+  }
+} catch (error) {
+  console.error('Failed to fetch OGP data:', error);
+}
+---
+
+<a href={url} target="_blank" rel="noopener noreferrer" class="link-card">
+  <div class="link-card-content">
+    <div class="link-card-text">
+      <p class="link-card-title">{ogData.title}</p>
+      {ogData.description && (
+        <p class="link-card-description">{ogData.description}</p>
+      )}
+      <p class="link-card-url">
+        {ogData.siteName || new URL(url).hostname}
+      </p>
+    </div>
+    {ogData.image && (
+      <div class="link-card-image">
+        <img src={ogData.image} alt={ogData.title} />
+      </div>
+    )}
+  </div>
+</a>
+
+<style>
+  .link-card {
+    display: block;
+    background: var(--color-tag-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    margin: 24px 0;
+    transition: border-color 0.2s ease;
+  }
+
+  .link-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .link-card-content {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .link-card-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .link-card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-heading) !important;
+    margin: 0 0 10px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+    text-decoration: none !important;
+  }
+
+  .link-card:hover .link-card-title {
+    text-decoration: none !important;
+  }
+
+  .link-card-description {
+    font-size: 14px;
+    color: var(--color-text-muted) !important;
+    margin: 0 0 12px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.6;
+    text-decoration: none !important;
+  }
+
+  .link-card:hover .link-card-description {
+    text-decoration: none !important;
+  }
+
+  .link-card-url {
+    font-size: 13px;
+    color: var(--color-text-muted) !important;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+    text-decoration: none !important;
+  }
+
+  .link-card:hover .link-card-url {
+    text-decoration: none !important;
+  }
+
+  .link-card-image {
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--color-tag-bg);
+  }
+
+  .link-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .link-card-content {
+      flex-direction: column-reverse;
+      padding: 16px;
+    }
+
+    .link-card-image {
+      width: 100%;
+      height: 200px;
+    }
+
+    .link-card-title {
+      font-size: 16px;
+    }
+
+    .link-card-description {
+      font-size: 13px;
+    }
+  }
+</style>

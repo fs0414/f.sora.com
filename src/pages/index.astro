@@ -1,11 +1,196 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import BlogLayout from '../layouts/BlogLayout.astro';
+import BlogCard from '../components/BlogCard.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allPosts = await getCollection('blog');
+const latestPosts = allPosts
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 5);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BlogLayout title="Home" description="Sora Fujitaniのポートフォリオサイト">
+  <div class="home-container">
+    <section class="profile">
+      <div class="profile-header">
+        <img src="/profile.png" alt="Sora Fujitani" class="profile-icon" />
+        <div class="profile-info">
+          <h1>Sora Fujitani</h1>
+          <p class="bio">
+            自己紹介TBD
+          </p>
+        </div>
+      </div>
+
+      <div class="social-links">
+        <a href="https://x.com/_fs0414" target="_blank" rel="noopener noreferrer" class="social-link">
+          X
+        </a>
+        <a href="https://github.com/fs0414" target="_blank" rel="noopener noreferrer" class="social-link">
+          GitHub
+        </a>
+        <a href="https://zenn.dev/soramarjr" target="_blank" rel="noopener noreferrer" class="social-link">
+          Zenn
+        </a>
+        <a href="https://youtrust.jp/users/fs0414" target="_blank" rel="noopener noreferrer" class="social-link">
+          YOUTRUST
+        </a>
+      </div>
+    </section>
+
+    <section class="latest-posts">
+      <div class="section-header">
+        <h2>Latest Posts</h2>
+        <a href="/blog" class="view-all">すべての記事を見る →</a>
+      </div>
+      <div class="posts">
+        {latestPosts.map(post => (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            slug={post.slug}
+          />
+        ))}
+      </div>
+    </section>
+  </div>
+</BlogLayout>
+
+<style>
+  .home-container {
+    max-width: 680px;
+  }
+
+  .profile {
+    margin-bottom: 64px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .profile-header {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 32px;
+  }
+
+  .profile-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+
+  .profile-info {
+    flex: 1;
+  }
+
+  .profile h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    color: var(--color-heading);
+  }
+
+  .bio {
+    font-size: 20px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .social-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--color-tag-bg);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+  }
+
+  .social-link:hover {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  .latest-posts {
+    margin-bottom: 48px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 32px;
+  }
+
+  .section-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-heading);
+  }
+
+  .view-all {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: 15px;
+  }
+
+  .view-all:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+  }
+
+  .posts {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  @media (max-width: 768px) {
+    .profile-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .profile-icon {
+      width: 100px;
+      height: 100px;
+    }
+
+    .profile h1 {
+      font-size: 36px;
+    }
+
+    .bio {
+      font-size: 18px;
+    }
+
+    .social-links {
+      justify-content: center;
+    }
+
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .section-header h2 {
+      font-size: 28px;
+    }
+  }
+</style>

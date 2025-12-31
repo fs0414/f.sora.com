@@ -6,10 +6,13 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "new-post": "bun run scripts/new-post.ts"
   },
   "dependencies": {
-    "astro": "^5.16.6"
+    "@astrojs/mdx": "^4.3.13",
+    "astro": "^5.16.6",
+    "open-graph-scraper": "^6.11.0"
   },
   "devDependencies": {
     "@types/bun": "^1.3.5"
