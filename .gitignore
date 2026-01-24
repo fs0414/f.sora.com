@@ -25,3 +25,5 @@ pnpm-debug.log*
 
 # serena
 .serena/
+
+docs/devlog/

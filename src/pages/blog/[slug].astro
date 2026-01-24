@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BlogLayout from '@layouts/BlogLayout.astro';
+import Breadcrumb from '@components/Breadcrumb.astro';
+import StructuredData from '@components/StructuredData.astro';
 import TableOfContents from './_components/TableOfContents.astro';
 
 export async function getStaticPaths() {
@@ -24,20 +26,39 @@ const postUrl = new URL(`/blog/${post.slug}`, siteUrl).toString();
 const encodedUrl = encodeURIComponent(postUrl);
 const encodedTitle = encodeURIComponent(post.data.title);
 
-const formattedDate = new Intl.DateTimeFormat('ja-JP', {
+const formatDate = (date: Date) => new Intl.DateTimeFormat('ja-JP', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
-}).format(post.data.pubDate);
+}).format(date);
+
+const formattedDate = formatDate(post.data.pubDate);
+const formattedUpdatedDate = post.data.updatedDate ? formatDate(post.data.updatedDate) : null;
 ---
 
 <BlogLayout title={post.data.title} description={post.data.description} image={`/og/${post.slug}.png`}>
+  <StructuredData
+    type="Article"
+    title={post.data.title}
+    description={post.data.description}
+    publishedDate={post.data.pubDate}
+    updatedDate={post.data.updatedDate}
+    author={post.data.author}
+    image={`/og/${post.slug}.png`}
+    url={postUrl}
+  />
   <article class="blog-post">
+    <Breadcrumb items={[{ name: 'Blog', url: '/blog' }, { name: post.data.title, url: `/blog/${post.slug}` }]} />
     <header class="post-header">
-      <a href="/blog" class="back-link">← Blog</a>
       <h1>{post.data.title}</h1>
       <div class="post-meta">
         <time datetime={post.data.pubDate.toISOString()}>{formattedDate}</time>
+        {formattedUpdatedDate && (
+          <>
+            <span class="separator">•</span>
+            <span class="updated">更新: {formattedUpdatedDate}</span>
+          </>
+        )}
         <span class="separator">•</span>
         <span class="author">{post.data.author}</span>
       </div>
@@ -121,18 +142,6 @@ const formattedDate = new Intl.DateTimeFormat('ja-JP', {
 <style>
   .blog-post {
     max-width: 680px;
-  }
-
-  .back-link {
-    display: inline-block;
-    color: var(--color-text-muted);
-    text-decoration: none;
-    font-size: 15px;
-    margin-bottom: 24px;
-  }
-
-  .back-link:hover {
-    color: var(--color-accent);
   }
 
   .post-header {

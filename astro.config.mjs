@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
 import remarkGfm from 'remark-gfm';
 import { remarkCodeFilename } from './src/lib/remark/code-filename.ts';
 import { transformerFilename } from './src/lib/shiki/filename-transformer.ts';
@@ -8,9 +9,12 @@ import { transformerFilename } from './src/lib/shiki/filename-transformer.ts';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://sorafujitani.me',
-  integrations: [mdx({
-    remarkPlugins: [remarkGfm, remarkCodeFilename],
-  })],
+  integrations: [
+    mdx({
+      remarkPlugins: [remarkGfm, remarkCodeFilename],
+    }),
+    sitemap(),
+  ],
   markdown: {
     remarkPlugins: [remarkGfm, remarkCodeFilename],
     shikiConfig: {

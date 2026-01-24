@@ -1,5 +1,6 @@
 ---
 import Search from '@components/Search.astro';
+import StructuredData from '@components/StructuredData.astro';
 import '@styles/global.css';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const { title, description, image = '/profile.png' } = Astro.props;
+const isHomePage = Astro.url.pathname === '/';
 const siteUrl = Astro.site || 'https://sorafujitani.me';
 const canonicalURL = new URL(Astro.url.pathname, siteUrl);
 const ogImage = new URL(image, siteUrl);
@@ -42,6 +44,9 @@ const ogImage = new URL(image, siteUrl);
     <meta property="twitter:title" content={`${title} | Sora Fujitani`} />
     {description && <meta property="twitter:description" content={description} />}
     <meta property="twitter:image" content={ogImage} />
+
+    <!-- Structured Data -->
+    {isHomePage && <StructuredData type="WebSite" />}
   </head>
   <body>
     <div class="container">

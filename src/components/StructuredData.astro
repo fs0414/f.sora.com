@@ -1,0 +1,88 @@
+---
+export interface Props {
+  type: 'Article' | 'WebSite' | 'BreadcrumbList';
+  // Article
+  title?: string;
+  description?: string;
+  publishedDate?: Date;
+  updatedDate?: Date;
+  author?: string;
+  image?: string;
+  url?: string;
+  // BreadcrumbList
+  breadcrumbs?: { name: string; url: string }[];
+}
+
+const { type, title, description, publishedDate, updatedDate, author, image, url, breadcrumbs } = Astro.props;
+const siteUrl = Astro.site?.toString() || 'https://sorafujitani.me';
+
+function generateArticleSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description: description,
+    image: image ? new URL(image, siteUrl).toString() : undefined,
+    datePublished: publishedDate?.toISOString(),
+    dateModified: (updatedDate || publishedDate)?.toISOString(),
+    author: {
+      '@type': 'Person',
+      name: author || 'Sora Fujitani',
+      url: siteUrl,
+    },
+    publisher: {
+      '@type': 'Person',
+      name: 'Sora Fujitani',
+      url: siteUrl,
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
+  };
+}
+
+function generateWebSiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Sora Fujitani',
+    url: siteUrl,
+    author: {
+      '@type': 'Person',
+      name: 'Sora Fujitani',
+    },
+  };
+}
+
+function generateBreadcrumbSchema() {
+  if (!breadcrumbs || breadcrumbs.length === 0) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: new URL(item.url, siteUrl).toString(),
+    })),
+  };
+}
+
+let schema: object | null = null;
+switch (type) {
+  case 'Article':
+    schema = generateArticleSchema();
+    break;
+  case 'WebSite':
+    schema = generateWebSiteSchema();
+    break;
+  case 'BreadcrumbList':
+    schema = generateBreadcrumbSchema();
+    break;
+}
+---
+
+{schema && (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+)}

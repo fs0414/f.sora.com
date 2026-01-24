@@ -1,0 +1,77 @@
+---
+import StructuredData from '@components/StructuredData.astro';
+
+export interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumb" aria-label="パンくずリスト">
+  <ol>
+    <li>
+      <a href="/">Home</a>
+    </li>
+    {items.map((item, index) => (
+      <li>
+        <span class="separator">/</span>
+        {index === items.length - 1 ? (
+          <span class="current" aria-current="page">{item.name}</span>
+        ) : (
+          <a href={item.url}>{item.name}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<StructuredData
+  type="BreadcrumbList"
+  breadcrumbs={[{ name: 'Home', url: '/' }, ...items]}
+/>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 24px;
+  }
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--color-accent);
+  }
+
+  .separator {
+    color: var(--color-text-muted);
+  }
+
+  .current {
+    color: var(--color-text-secondary);
+  }
+</style>
