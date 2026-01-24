@@ -1,0 +1,61 @@
+---
+interface SkillLevel {
+  label: string;
+  skills: string[];
+}
+
+interface Props {
+  levels: SkillLevel[];
+  theme?: 'light' | 'dark';
+}
+
+const { levels, theme = 'dark' } = Astro.props;
+
+function getSkillIconsUrl(skills: string[], theme: string): string {
+  return `https://skillicons.dev/icons?i=${skills.join(',')}&theme=${theme}`;
+}
+---
+
+<div class="skill-stack">
+  {levels.map((level) => (
+    <div class="skill-level">
+      <h3 class="level-label">{level.label}</h3>
+      <div class="skill-icons">
+        <img
+          src={getSkillIconsUrl(level.skills, theme)}
+          alt={`${level.label}: ${level.skills.join(', ')}`}
+          loading="lazy"
+        />
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .skill-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin: 24px 0;
+  }
+
+  .skill-level {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .level-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-secondary, #666);
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+  }
+
+  .skill-icons img {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
