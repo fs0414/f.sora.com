@@ -19,24 +19,24 @@ export default defineConfig({
     remarkPlugins: [remarkGfm, remarkCodeFilename],
     shikiConfig: {
       theme: {
-        name: 'custom-biome-theme',
+        name: 'custom-cyan-white-theme',
         type: 'dark',
         colors: {
-          'editor.background': '#161b22',
-          'editor.foreground': '#e1e4e8',
+          'editor.background': '#0d1117',
+          'editor.foreground': '#e6edf3',
         },
         tokenColors: [
           {
             scope: ['comment', 'punctuation.definition.comment'],
             settings: {
-              foreground: '#6e7681',
+              foreground: '#8b949e',
               fontStyle: 'italic',
             },
           },
           {
             scope: ['source.shell', 'text.shell'],
             settings: {
-              foreground: '#e1e4e8',
+              foreground: '#e6edf3',
             },
           },
           {
@@ -55,20 +55,20 @@ export default defineConfig({
           {
             scope: ['source.shell keyword', 'source.shell support.function'],
             settings: {
-              foreground: '#e1e4e8',
+              foreground: '#e6edf3',
               fontStyle: 'normal',
             },
           },
           {
             scope: ['entity.name.function', 'support.function'],
             settings: {
-              foreground: '#58a6ff',
+              foreground: '#79c0ff',
             },
           },
           {
             scope: ['string', 'string.quoted'],
             settings: {
-              foreground: '#7ee787',
+              foreground: '#a5d6ff',
             },
           },
           {
@@ -80,7 +80,7 @@ export default defineConfig({
           {
             scope: ['variable', 'variable.other'],
             settings: {
-              foreground: '#e1e4e8',
+              foreground: '#e6edf3',
             },
           },
           {
@@ -92,7 +92,7 @@ export default defineConfig({
           {
             scope: ['punctuation', 'meta.brace'],
             settings: {
-              foreground: '#c9d1d9',
+              foreground: '#e6edf3',
             },
           },
           {
