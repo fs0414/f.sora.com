@@ -116,6 +116,7 @@ export const GET: APIRoute = async ({ props }) => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 paddingLeft: '20px',
+                marginBottom: '40px',
               },
               children: [
                 // サイト名
